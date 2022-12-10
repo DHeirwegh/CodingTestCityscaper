@@ -7,18 +7,16 @@ public class TileManager : MonoBehaviour
 {
     private List<Tile> _tiles = new List<Tile>();
 
-    private int _zoomLevel = 0;
+    private int _zoomLevel = 3;
 
     public void Start()
     {
-        // AddTiles();
-        // APIHandler.Instance.GetTileTexture(0, 0, 0);
         StartCoroutine(DisplayTiles());
     }
 
     private void SpawnTiles()
     {
-        _tiles.Sort((x, y) => x.ID.CompareTo(y.ID));
+        _tiles.Sort((x, y) => y.ID.CompareTo(x.ID));
 
         int nrTiles = (int)Mathf.Pow(2, _zoomLevel);
 
@@ -26,9 +24,9 @@ public class TileManager : MonoBehaviour
         {
             for (int x = 0; x < nrTiles; x++)
             {
-                var currTile = _tiles[y * nrTiles + x];
+                var currTile = _tiles[x * nrTiles + y];
                 var tileWidth = currTile.Texture.width;
-                Vector2 pos = new Vector2(x * tileWidth, y * tileWidth);
+                Vector2 pos = new Vector2(nrTiles - x * tileWidth / 100f, y * tileWidth / 100f);
                 SpawnTile(currTile, pos);
             }
         }
@@ -36,12 +34,13 @@ public class TileManager : MonoBehaviour
 
     private void SpawnTile(Tile t, Vector2 pos)
     {
-        var tileObj = new GameObject();
-        //tileObj.transform.position = pos;
-        //tileObj.transform.localScale *= t.Texture.width;
+        var tileObj = new GameObject($"Tile: {t.ID}");
 
         SpriteRenderer tileRenderer = tileObj.AddComponent<SpriteRenderer>();
-        tileRenderer.sprite = Sprite.Create(t.Texture, new Rect(0, 0, t.Texture.width, t.Texture.height), new Vector2(0f, 0f));
+        tileRenderer.sprite = Sprite.Create(t.Texture, new Rect(0, 0, t.Texture.width, t.Texture.height), new Vector2(.5f, .5f));
+
+        tileObj.transform.position = pos;
+        //tileObj.transform.localScale *= t.Texture.width;
     }
 
     private IEnumerator DisplayTiles()
