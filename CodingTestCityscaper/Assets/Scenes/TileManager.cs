@@ -7,7 +7,7 @@ public class TileManager : MonoBehaviour
 {
     private List<Tile> _tiles = new List<Tile>();
 
-    private int _zoomLevel = 2;
+    private int _zoomLevel = 0;
 
     public void Start()
     {
@@ -37,7 +37,9 @@ public class TileManager : MonoBehaviour
     private void SpawnTile(Tile t, Vector2 pos)
     {
         var tileObj = new GameObject();
-        tileObj.transform.position = new Vector3(pos.x, pos.y, 0);
+        //tileObj.transform.position = pos;
+        //tileObj.transform.localScale *= t.Texture.width;
+
         SpriteRenderer tileRenderer = tileObj.AddComponent<SpriteRenderer>();
         tileRenderer.sprite = Sprite.Create(t.Texture, new Rect(0, 0, t.Texture.width, t.Texture.height), new Vector2(0f, 0f));
     }
