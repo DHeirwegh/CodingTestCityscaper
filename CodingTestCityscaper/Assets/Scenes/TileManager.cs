@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 public class TileManager : MonoBehaviour
 {
-    private List<Tile> _tiles = new List<Tile>();
+    private static List<Tile> _tiles = new List<Tile>();
 
     private int _zoomLevel = 3;
 
@@ -53,7 +53,7 @@ public class TileManager : MonoBehaviour
             for (int y = 0; y < nrTiles; y++)
             {
                 ++id;
-                StartCoroutine(GetTile(x, y, id));
+                StartCoroutine(APIHandler.GetTile(x, y, id, _zoomLevel));
             }
         }
         while (_tiles.Count < nrTiles * nrTiles)
@@ -61,26 +61,8 @@ public class TileManager : MonoBehaviour
         SpawnTiles();
     }
 
-    private IEnumerator GetTile(int x = 0, int y = 0, int id = 0)
-
+    public static void AddTile(Tile tile)
     {
-        using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture($"https://www.wmts.nrw.de/geobasis/wmts_nw_dop/tiles/nw_dop/EPSG_25832_16/{_zoomLevel}/{x}/{y}"))
-        {
-            yield return uwr.SendWebRequest();
-
-            if (uwr.result != UnityWebRequest.Result.Success)
-            {
-                Debug.Log(uwr.error);
-            }
-            else
-            {
-                // Get downloaded asset bundle
-                var texture = DownloadHandlerTexture.GetContent(uwr);
-                Tile t = new Tile();
-                t.Texture = texture;
-                t.ID = id;
-                _tiles.Add(t);
-            }
-        }
+        _tiles.Add(tile);
     }
 }
