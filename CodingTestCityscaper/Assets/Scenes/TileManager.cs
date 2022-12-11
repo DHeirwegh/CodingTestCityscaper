@@ -26,20 +26,22 @@ public class TileManager : MonoBehaviour
             {
                 var currTile = _tiles[x * nrTiles + y];
                 var tileWidth = currTile.Texture.width;
-                Vector2 pos = new Vector2(nrTiles - x * tileWidth / 100f, y * tileWidth / 100f);
-                SpawnTile(currTile, pos);
+
+                //we divide the width by 100 because of the units that Unity uses
+                currTile.Position = new Vector2(nrTiles - x * tileWidth / 100f, y * tileWidth / 100f);
+                SpawnTile(currTile);
             }
         }
     }
 
-    private void SpawnTile(Tile t, Vector2 pos)
+    private void SpawnTile(Tile t)
     {
         var tileObj = new GameObject($"Tile: {t.ID}");
 
         SpriteRenderer tileRenderer = tileObj.AddComponent<SpriteRenderer>();
         tileRenderer.sprite = Sprite.Create(t.Texture, new Rect(0, 0, t.Texture.width, t.Texture.height), new Vector2(.5f, .5f));
 
-        tileObj.transform.position = pos;
+        tileObj.transform.position = t.Position;
         //tileObj.transform.localScale *= t.Texture.width;
     }
 
